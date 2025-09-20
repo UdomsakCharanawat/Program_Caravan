@@ -1,0 +1,65 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+
+public class game01Control : MonoBehaviour
+{
+    public float time, currentTime;
+    public bool play;
+
+
+    public GameObject[] showOBJ, hideBT, hidePanel;
+    public int animal; // 0 = pig, 1 = chicken, 2 = crown
+
+    allData _allData;
+
+    public void firstSetup()
+    {
+        for (int i = 0; i < hideBT.Length; i++) hideBT[i].SetActive(false);
+        for (int i = 0; i < hidePanel.Length; i++) hidePanel[i].SetActive(false);
+        for (int i = 0; i < showOBJ.Length; i++) showOBJ[i].SetActive(true);
+    }
+
+    void Start()
+    {
+        try
+        {
+            _allData = GameObject.Find("allData").GetComponent<allData>();
+        }
+        catch
+        {
+            SceneManager.LoadScene(0);
+        }
+        
+
+        firstSetup();
+
+        currentTime = 0;
+        play = true;
+    }
+
+    void Update()
+    {
+        if (play)
+        {
+            currentTime += Time.deltaTime;
+            if (currentTime >= time) SceneManager.LoadScene(0);
+
+            if (Input.GetMouseButtonDown(0)) currentTime = 0;
+        }
+    }
+
+    public void btHome()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void btBack()
+    {
+        _allData.sGame01 = true;
+        SceneManager.LoadScene(0);
+    }
+}
+
