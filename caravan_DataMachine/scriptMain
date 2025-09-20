@@ -1,0 +1,232 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+public class scriptMain : MonoBehaviour
+{
+    public float time, currentTime;
+    public Animator pointMove;
+    public bool run, scan;
+
+    public GameObject[] hideHome;
+
+    public GameObject g2CircleBG, aw1, aw2, cirlceRing6;
+    public bool load;
+    public Image lineLoad;
+    public float timeFill, currentTimeFill, fillAmount;
+
+    public int phonePage;
+
+    [Header("animation type")]
+    public GameObject arrLeft;
+    public GameObject arrRight;
+    public GameObject btStart;
+    public Animator phishing;
+    public Animator dataBreaches;
+    public Animator botnets;
+    public Animator ransomware;
+    public Animator apt;
+    public int type = 0;
+    bool waitClick = false;
+
+    void Start()
+    {
+        phonePage = 0;
+        btstartG2();
+    }
+
+    void Update()
+    {
+        if (scan) keypressed();
+
+        if (run)
+        {
+            currentTime += Time.deltaTime;
+            if(currentTime >= time)
+            {
+                bthome();
+                currentTime = 0;
+            }
+        }
+
+
+        if (load)
+        {
+            currentTimeFill += Time.deltaTime;
+            fillAmount = currentTimeFill / timeFill;
+            lineLoad.fillAmount = fillAmount;
+            if (currentTimeFill >= timeFill)
+            {
+                //load = false;
+                currentTimeFill = 0;
+                SceneManager.LoadScene(phonePage);
+                Debug.Log("change scene");
+            }
+        }
+
+        if (!load && phonePage != 0)
+        {
+            currentTimeFill = 0;
+            lineLoad.fillAmount = 0;
+            aw1.SetActive(true);
+            aw2.SetActive(false);
+            cirlceRing6.SetActive(false);
+            phonePage = 0;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            load = false;
+        }
+    }
+
+    public void keypressed()
+    {
+        if (Input.GetMouseButtonDown(0)) currentTime = 0;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            loadCanvas();
+            phonePage = 1;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            loadCanvas();
+            phonePage = 2;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            loadCanvas();
+            phonePage = 3;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            loadCanvas();
+            phonePage = 4;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            loadCanvas();
+            phonePage = 5;
+        }
+    }
+
+    private void loadCanvas()
+    {
+        aw1.SetActive(false);
+        aw2.SetActive(true);
+        cirlceRing6.SetActive(true);
+        load = true;
+        lineLoad.fillAmount = 0;
+    }
+
+
+
+    public void btstartG1()
+    {
+        run = true;
+    }
+
+    public void btnext()
+    {
+        pointMove.SetBool("in", true);
+    }
+
+    public void btback()
+    {
+        pointMove.SetBool("in", false);
+        scan = false;
+        type = 0;
+    }
+
+    public void bthome()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void btstartG2()
+    {
+        scan = true;
+        for(int i = 0; i < hideHome.Length; i++)
+        {
+            hideHome[i].SetActive(false);
+        }
+    }
+
+    public void btArrowRight()
+    {
+        if (!waitClick)
+        {
+            if (type < 4) type++;
+
+            switch (type)
+            {
+                case 1:
+                    phishing.SetTrigger("tigRight");
+                    dataBreaches.SetTrigger("tigRight");
+                    arrLeft.SetActive(true);
+                    break;
+                case 2:
+                    Debug.Log("tigRight");
+                    dataBreaches.SetTrigger("tigRight");
+                    botnets.SetTrigger("tigRight");
+                    break;
+                case 3:
+                    botnets.SetTrigger("tigRight");
+                    ransomware.SetTrigger("tigRight");
+                    break;
+                case 4:
+                    ransomware.SetTrigger("tigRight");
+                    apt.SetTrigger("tigRight");
+                    arrRight.SetActive(false);
+                    btStart.SetActive(true);
+                    break;
+            }
+            waitClick = true;
+            StartCoroutine(waitClickArrow());
+        }
+        
+    }
+
+    public void btArrowLeft()
+    {
+        if (!waitClick)
+        {
+            if (type > 0) type--;
+
+            switch (type)
+            {
+                case 0:
+                    phishing.SetTrigger("tigLeft");
+                    dataBreaches.SetTrigger("tigLeft");
+                    arrLeft.SetActive(false);
+                    break;
+                case 1:
+                    dataBreaches.SetTrigger("tigLeft");
+                    botnets.SetTrigger("tigLeft");
+                    break;
+                case 2:
+                    botnets.SetTrigger("tigLeft");
+                    ransomware.SetTrigger("tigLeft");
+                    break;
+                case 3:
+                    ransomware.SetTrigger("tigLeft");
+                    apt.SetTrigger("tigLeft");
+                    arrRight.SetActive(true);
+                    btStart.SetActive(false);
+                    break;
+            }
+            waitClick = true;
+            StartCoroutine(waitClickArrow());
+        }
+        
+    }
+
+    IEnumerator waitClickArrow()
+    {
+        yield return new WaitForSeconds(1f);
+        waitClick = false;
+    }
+}
